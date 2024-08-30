@@ -1,5 +1,7 @@
 # pages-mimic-github-flavored-markdown
 
+This repo aims to make the markdown rendered from GitHub Pages looks as close as possible to that rendered by GitHub.
+
 ## Dependency versions
 
 | Dependency                                                                       | Version |
@@ -9,11 +11,11 @@
 | [github-markdown-css](https://github.com/sindresorhus/github-markdown-css)       | 5.6.1   |
 | [anchor-js](https://github.com/bryanbraun/anchorjs)                              | 5.0.0   |
 
-## Prior knowledge
+## GitHub Pages and GitHub process markdown files differently
 
-[pages-gem](https://github.com/github/pages-gem) is a simple Ruby Gem to
-bootstrap dependencies for setting up and maintaining a local Jekyll environment
-in sync with GitHub Pages.
+There are mainly two reasons: 1. Different markdown processors. 2. Different CSS styling.
+
+### Markdown converter
 
 From
 https://github.com/github/pages-gem/blob/v232/lib/github-pages/configuration.rb#L135-L151:
@@ -37,6 +39,12 @@ def restrict_and_config_markdown_processor(config)
   }
 end
 ```
+
+GitHub Pages supports `kramdown` and `GFM` as markdown processor, where `GFM` is just `CommonMarkGhPages`. Although `GFM` outputs HTML closer to GitHub, it still behaves differently in some cases. For example, alerts are not supported by `GFM`.
+
+GitHub uses [markup](https://github.com/github/markup) to determine which markup library to use to render a content file. However, this only includes the initial step of rendering and the rest steps are done on GitHub.com, which means that the whole rendering pipeline is not open-sourced. To render the markdown file exactly like GitHub, one can use [GitHub API](https://docs.github.com/en/rest/markdown/markdown?apiVersion=2022-11-28#render-a-markdown-document).
+
+## Prior knowledge
 
 If `markdown: GFM` is set in `_config.yml`, it will be replaced by
 `CommonMarkGhPages`
